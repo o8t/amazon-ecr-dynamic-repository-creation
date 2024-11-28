@@ -24,5 +24,5 @@ variable "REPO_TAGS" {
 variable "REPO_SCAN_ON_PUSH" {
   type        = bool
   description = "Toggles Scan on push on repos Lambda creates."
-  default     = true
+  default     = false
 }

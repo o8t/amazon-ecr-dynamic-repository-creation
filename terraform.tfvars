@@ -4,5 +4,5 @@ SCAN_FREQUENCY       = "SCAN_ON_PUSH"
 SCAN_TYPE            = "BASIC"
 REPO_TAGS = {
   "created-by" : "dynamic-create-ecr-repo-lambda",
-  "env" : "poc"
+  "env" : "dev"
 }
