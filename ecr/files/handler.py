@@ -23,14 +23,17 @@ def run(event, context):
 
     if not repositories:
         try: 
-
             scan_on_push = bool(os.environ["REPO_SCAN_ON_PUSH"])
             mutability   = os.environ["IMAGE_TAG_MUTABILITY"]
 
-            if os.environ["REPO_TAGS"]:
-                 tags = [{"Key": k, "Value": v} for (k, v) in json.loads(os.environ["REPO_TAGS"]).items()]
+            if os.environ.get("REPO_TAGS"):
+                tags = [{"Key": k, "Value": v} for (k, v) in json.loads(os.environ["REPO_TAGS"]).items()]
+            else:
+                tags = []
         except Exception as e:
             logger.error("env variable malformed: %s", e)
+            sys.exit(1)
+
         try:
             client.create_repository(
                 registryId=account_id,
@@ -44,3 +47,33 @@ def run(event, context):
         except Exception as e:
             logger.error("failed to create repository %s: %s", repository, e)
             sys.exit(1)
+
+    # Add ECR policy to allow any action from anything part of the org id "12345"
+    policy_text = {
+        "Version": "2012-10-17",
+        "Statement": [
+            {
+                "Sid": "AllowAllActionsForOrg12345",
+                "Effect": "Allow",
+                "Principal": "*",
+                "Action": "*",
+                "Condition": {
+                    "StringEquals": {
+                        "aws:PrincipalOrgID": "12345"
+                    }
+                }
+            }
+        ]
+    }
+
+    try:
+        client.set_repository_policy(
+            registryId=account_id,
+            repositoryName=repository,
+            policyText=json.dumps(policy_text),
+            force=True,
+        )
+        logger.info("Set policy on repository %s", repository)
+    except Exception as e:
+        logger.error("Failed to set policy on repository %s: %s", repository, e)
+        sys.exit(1)
