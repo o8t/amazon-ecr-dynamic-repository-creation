@@ -59,7 +59,7 @@ def run(event, context):
                 "Action": "*",
                 "Condition": {
                     "StringEquals": {
-                        "aws:PrincipalOrgID": "12345"
+                        "aws:PrincipalOrgID": "o-2k3z9p07lx"
                     }
                 }
             }
