@@ -22,6 +22,29 @@ data "aws_iam_policy_document" "access" {
     ]
   }
   statement {
+    sid    = "CrossAccountECROperations"
+    effect = "Allow"
+    actions = [
+      "ecr:GetAuthorizationToken",
+      "ecr:DescribeImages",
+      "ecr:BatchGetImage",
+      "ecr:GetDownloadUrlForLayer",
+      "ecr:PutImage",
+      "ecr:InitiateLayerUpload",
+      "ecr:UploadLayerPart",
+      "ecr:CompleteLayerUpload",
+      "ecr:CreateRepository",
+      "ecr:DescribeRepositories"
+    ]
+    resources = ["*"]
+  }
+  statement {
+    sid    = "AssumeDestinationRole"
+    effect = "Allow"
+    actions = ["sts:AssumeRole"]
+    resources = [var.DEST_ECR_ROLE_ARN != "" ? var.DEST_ECR_ROLE_ARN : "arn:aws:iam::${var.DEST_ECR_ACCOUNT_ID}:role/*"]
+  }
+  statement {
     sid    = "WriteLogGroup"
     effect = "Allow"
     actions = [
