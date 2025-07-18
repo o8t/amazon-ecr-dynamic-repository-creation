@@ -26,3 +26,19 @@ variable "REPO_SCAN_ON_PUSH" {
   description = "Toggles Scan on push on repos Lambda creates."
   default     = true
 }
+
+variable "DEST_ECR_ACCOUNT_ID" {
+  type        = string
+  description = "AWS account ID of the destination ECR registry for semver image replication."
+}
+
+variable "DEST_ECR_REGION" {
+  type        = string
+  description = "AWS region of the destination ECR registry for semver image replication."
+}
+
+variable "DEST_ECR_ROLE_ARN" {
+  type        = string
+  description = "ARN of the cross-account role to assume for replicating images to destination ECR."
+  default     = ""
+}
